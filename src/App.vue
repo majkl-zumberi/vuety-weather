@@ -40,9 +40,106 @@
             </div>
           </div>
         </v-flex>
-        <v-flex xs12 md9>
+        <v-flex xs12 md9 class="bg-background">
           <div class="side-container2">
-            <p>weila</p>
+            <v-container>
+              <v-layout row justify-space-around class="pa-8">
+                <v-flex xs6 md2>
+                  <div class="pa-4 card">
+                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
+                    <img src="/img/Shower.png" alt="weather icon" />
+                    <div class="pt-4">
+                      <p class="white--text">
+                        16<span>&#8451;</span
+                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
+                      </p>
+                    </div>
+                  </div>
+                </v-flex>
+                <v-flex xs6 md2>
+                  <div class="pa-4 card">
+                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
+                    <img src="/img/Shower.png" alt="weather icon" />
+                    <div class="pt-4">
+                      <p class="white--text">
+                        16<span>&#8451;</span
+                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
+                      </p>
+                    </div>
+                  </div>
+                </v-flex>
+                <v-flex xs6 md2>
+                  <div class="pa-4 card">
+                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
+                    <img src="/img/Shower.png" alt="weather icon" />
+                    <div class="pt-4">
+                      <p class="white--text">
+                        16<span>&#8451;</span
+                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
+                      </p>
+                    </div>
+                  </div>
+                </v-flex>
+                <v-flex xs6 md2>
+                  <div class="pa-4 card">
+                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
+                    <img src="/img/Shower.png" alt="weather icon" />
+                    <div class="pt-4">
+                      <p class="white--text">
+                        16<span>&#8451;</span
+                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
+                      </p>
+                    </div>
+                  </div>
+                </v-flex>
+                <v-flex xs6 md2>
+                  <div class="pa-4 card">
+                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
+                    <img src="/img/Shower.png" alt="weather icon" />
+                    <div class="pt-4">
+                      <p class="white--text">
+                        16<span>&#8451;</span
+                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
+                      </p>
+                    </div>
+                  </div>
+                </v-flex>
+              </v-layout>
+            </v-container>
+            <v-container>
+              <h1
+                class="white--text display-2 text-left pl-8 pt-8"
+                :class="$vuetify.breakpoint.xs ? 'display-1' : 'display-2'"
+              >
+                Primo piano (oggi)
+              </h1>
+              <v-layout row justify-space-around class="pa-4 ml-3">
+                <v-flex xs12 md6>
+                  <div class="pa-3 card">
+                    <p class="white--text font-weight-light title text-center">Condizione vento</p>
+                    <p class="white--text display-2">7<span class="title">M/S</span></p>
+                  </div>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <div class="pa-3 card">
+                    <p class="white--text font-weight-light title text-center">Umidità</p>
+                    <p class="white--text display-2">84<span class="title">%</span></p>
+                  </div>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <div class="pa-3 card">
+                    <p class="white--text font-weight-light title text-center">Visibilità</p>
+                    <p class="white--text display-2">6,4 <span class="title">Metri</span></p>
+                  </div>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <div class="pa-3 card">
+                    <p class="white--text font-weight-light title text-center">Pressione aria</p>
+                    <p class="white--text display-2">1024<span class="title">hPa</span></p>
+                  </div>
+                </v-flex>
+              </v-layout>
+            </v-container>
           </div>
         </v-flex>
       </v-layout>
@@ -61,7 +158,10 @@ export default {
   })
 };
 </script>
-<style>
+<style lang="scss">
+body {
+  background-color: #100e1c;
+}
 div .d-flex {
   height: 39vh;
 }
@@ -73,7 +173,7 @@ div .d-flex {
 }
 
 .side-container2 {
-  height: 100vh;
+  /* height: 100vh; */
   background-color: #100e1c;
 }
 
@@ -103,5 +203,22 @@ div .d-flex {
   background-repeat: no-repeat;
   background-position: 50% 0;
   background-size: cover;
+}
+
+.card {
+  background-color: #1d2038;
+  margin: 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.card img {
+  width: 4em !important;
+  height: auto !important;
+  margin: 0 auto;
+}
+
+.bg-background {
+  background-color: #100e1c;
 }
 </style>
