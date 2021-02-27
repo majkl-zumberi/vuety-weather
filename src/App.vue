@@ -70,23 +70,39 @@ export default {
       }
     },
     async getCurrentLocation() {
-      const { data } = await this.$axios.get(`${process.env.VUE_APP_LOCATION}`);
-      const location = { city: data.city, lat: data.lat, lon: data.lon };
-      this.getCityWeather({ ...location });
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      };
+      navigator.geolocation.getCurrentPosition(
+        async pos => {
+          this.lat = pos.coords.latitude;
+          this.lon = pos.coords.longitude;
+
+          const { data } = await this.$axios.get(
+            `${process.env.VUE_APP_REVERSEGEOCODING}&latitude=${this.lat}&longitude=${this.lon}`
+          );
+          this.city = `${data.locality}, ${data.principalSubdivision}`;
+          this.getCityWeather({ city: this.city, lat: this.lat, lon: this.lon });
+        },
+        error => {
+          const message =
+            error.message === "User denied geolocation prompt"
+              ? "hai rifiutato la richiesta di accedere alla posizione, città di default:Bergamo"
+              : `${error.message} default city: Bergamo`;
+          this.$dialog.notify.error(message, {
+            position: "top-right",
+            timeout: 3000
+          });
+          this.getCityWeather({ city: "Bergamo", lat: "45.69331", lon: "9.663539" });
+        },
+        options
+      );
     }
   },
   async created() {
-    const { data } = await this.$axios.get(`${process.env.VUE_APP_LOCATION}`);
-    const { city, country, lat, lon } = data;
-    this.city = `${city}, ${country}`;
-    this.lat = lat;
-    this.lon = lon;
-
-    const { data: weatherData } = await this.$axios.get(
-      `data/2.5/onecall?lat=${this.lat}&lon=${lon}`
-    );
-    this.current = { ...weatherData.current };
-    this.daily = weatherData.daily;
+    this.getCurrentLocation();
 
     eventBus.$on("city-changed", this.getCityWeather);
     eventBus.$on("search-city", this.searchCity);
