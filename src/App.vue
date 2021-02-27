@@ -15,7 +15,12 @@
             <div class="current-weather-bg-wrapper">
               <div id="weather">
                 <v-row align="center" justify="center">
-                  <v-img src="http://openweathermap.org/img/wn/10d@2x.png"></v-img>
+                  <img
+                    v-if="current.weather"
+                    :src="fallbackIcon"
+                    v-on:error="onImgError"
+                    alt="weather icon"
+                  />
                 </v-row>
               </div>
             </div>
@@ -23,17 +28,22 @@
               class="d-flex flex-column
              align-center justify-space-around align-content-space-between"
             >
-              <h2 class="text-h1 white--text font-weight-medium">
-                15<span class="display-1">&#8451;</span>
+              <h2 class="text-h2 white--text font-weight-medium">
+                {{ getCurrentTemp }}<span class="display-1">&#8451;</span>
               </h2>
-              <p class="blue-grey--text text--lighten-2 font-weight-medium display-1">Shower</p>
+              <p
+                v-if="current.weather"
+                class="blue-grey--text text--lighten-2 font-weight-medium display-1"
+              >
+                {{ getCurrentWeatherDesc }}
+              </p>
               <div>
-                <span class="body-1 grey--text font-weight-regular ">Today</span>
+                <span class="body-1 grey--text font-weight-regular ">{{ currentTime }}</span>
                 <span class="body-1 grey--text font-weight-regular px-2">•</span>
-                <span class="body-1 grey--text font-weight-regular ">Fri 5 jun</span>
+                <span class="body-1 grey--text font-weight-regular ">{{ getDate }}</span>
                 <div>
                   <p class="body-1 grey--text font-weight-regular text-center">
-                    <span><v-icon color="grey">location_on</v-icon></span> italy
+                    <span><v-icon color="grey">location_on</v-icon></span> {{ city }}
                   </p>
                 </div>
               </div>
@@ -43,63 +53,23 @@
         <v-flex xs12 md9 class="bg-background">
           <div class="side-container2">
             <v-container>
-              <v-layout row justify-space-around class="pa-8">
-                <v-flex xs6 md2>
+              <v-layout row justify-space-around class="pa-8" v-if="daily && Array.isArray(daily)">
+                <v-flex xs6 md2 v-for="weather in daily.slice(1, 6)" :key="weather.dt">
                   <div class="pa-4 card">
-                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
-                    <img src="/img/Shower.png" alt="weather icon" />
+                    <p class="white--text ont-weight-medium title text-center">
+                      {{ getDayFromUnix(weather.dt) }}
+                    </p>
+                    <img
+                      v-if="weather.weather"
+                      :src="`/img/${weather.weather[0].icon}.png`"
+                      alt="weather icon"
+                    />
                     <div class="pt-4">
                       <p class="white--text">
-                        16<span>&#8451;</span
-                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
-                      </p>
-                    </div>
-                  </div>
-                </v-flex>
-                <v-flex xs6 md2>
-                  <div class="pa-4 card">
-                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
-                    <img src="/img/Shower.png" alt="weather icon" />
-                    <div class="pt-4">
-                      <p class="white--text">
-                        16<span>&#8451;</span
-                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
-                      </p>
-                    </div>
-                  </div>
-                </v-flex>
-                <v-flex xs6 md2>
-                  <div class="pa-4 card">
-                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
-                    <img src="/img/Shower.png" alt="weather icon" />
-                    <div class="pt-4">
-                      <p class="white--text">
-                        16<span>&#8451;</span
-                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
-                      </p>
-                    </div>
-                  </div>
-                </v-flex>
-                <v-flex xs6 md2>
-                  <div class="pa-4 card">
-                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
-                    <img src="/img/Shower.png" alt="weather icon" />
-                    <div class="pt-4">
-                      <p class="white--text">
-                        16<span>&#8451;</span
-                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
-                      </p>
-                    </div>
-                  </div>
-                </v-flex>
-                <v-flex xs6 md2>
-                  <div class="pa-4 card">
-                    <p class="white--text ont-weight-medium title text-center">Tomorrow</p>
-                    <img src="/img/Shower.png" alt="weather icon" />
-                    <div class="pt-4">
-                      <p class="white--text">
-                        16<span>&#8451;</span
-                        ><span class="white--text ml-4">23<span>&#8451;</span></span>
+                        {{ weather.temp.min }}<span>&#8451;</span
+                        ><span class="white--text ml-4"
+                          >{{ weather.temp.max }}<span>&#8451;</span></span
+                        >
                       </p>
                     </div>
                   </div>
@@ -117,25 +87,33 @@
                 <v-flex xs12 md6>
                   <div class="pa-3 card">
                     <p class="white--text font-weight-light title text-center">Condizione vento</p>
-                    <p class="white--text display-2">7<span class="title">M/S</span></p>
+                    <p class="white--text display-2">
+                      {{ getCurrentWindSpeed }}<span class="title">M/S</span>
+                    </p>
                   </div>
                 </v-flex>
                 <v-flex xs12 md6>
                   <div class="pa-3 card">
                     <p class="white--text font-weight-light title text-center">Umidità</p>
-                    <p class="white--text display-2">84<span class="title">%</span></p>
+                    <p class="white--text display-2">
+                      {{ getCurrentHumidity }}<span class="title">%</span>
+                    </p>
                   </div>
                 </v-flex>
                 <v-flex xs12 md6>
                   <div class="pa-3 card">
                     <p class="white--text font-weight-light title text-center">Visibilità</p>
-                    <p class="white--text display-2">6,4 <span class="title">Metri</span></p>
+                    <p class="white--text display-2">
+                      {{ getCurrentVisibility }} <span class="title">Metri</span>
+                    </p>
                   </div>
                 </v-flex>
                 <v-flex xs12 md6>
                   <div class="pa-3 card">
                     <p class="white--text font-weight-light title text-center">Pressione aria</p>
-                    <p class="white--text display-2">1024<span class="title">hPa</span></p>
+                    <p class="white--text display-2">
+                      {{ getCurrentPressure }}<span class="title">hPa</span>
+                    </p>
                   </div>
                 </v-flex>
               </v-layout>
@@ -148,17 +126,92 @@
 </template>
 
 <script>
+import moment from "moment";
+
+moment.locale("it");
 export default {
   name: "App",
 
   components: {},
 
   data: () => ({
-    drawer: false
-  })
+    drawer: false,
+    lat: 0,
+    lon: 0,
+    city: "",
+    current: {},
+    daily: {},
+    failed_image: false
+  }),
+  computed: {
+    currentTime() {
+      return moment.unix(this.current.dt).calendar(null, {
+        lastDay: "[Ieri]",
+        sameDay: "[Oggi]",
+        nextDay: "[Domani]",
+        lastWeek: "[last] dddd",
+        nextWeek: "dddd",
+        sameElse: "L"
+      });
+    },
+    getDate() {
+      return moment.unix(this.current.dt).format("LL");
+    },
+    getCurrentWeatherDesc() {
+      return this.current.weather[0].description;
+    },
+    getCurrentTemp() {
+      return this.current.temp;
+    },
+    getCurrentHumidity() {
+      return this.current.humidity;
+    },
+    getCurrentVisibility() {
+      return this.current.visibility;
+    },
+    getCurrentWindSpeed() {
+      return this.current.wind_speed;
+    },
+    getCurrentPressure() {
+      return this.current.pressure;
+    },
+    fallbackIcon() {
+      return this.failed_image
+        ? `${process.env.VUE_APP_WEATHERICON}${this.current.weather[0].icon}${process.env.VUE_APP_SIZEICON}`
+        : `/img/${this.current.weather[0].icon}.png`;
+    }
+  },
+  methods: {
+    onImgError() {
+      this.failed_image = true;
+    },
+    getDayFromUnix(unix) {
+      return moment.unix(unix).calendar(null, {
+        lastDay: "[Ieri]",
+        sameDay: "[Oggi]",
+        nextDay: "[Domani]",
+        lastWeek: "[last] dddd",
+        nextWeek: "dddd",
+        sameElse: "L"
+      });
+    }
+  },
+  async created() {
+    const { data } = await this.$axios.get("http://ip-api.com/json");
+    const { city, country, lat, lon } = data;
+    this.city = `${city}, ${country}`;
+    this.lat = lat;
+    this.lon = lon;
+
+    const { data: weatherData } = await this.$axios.get(
+      `data/2.5/onecall?lat=${this.lat}&lon=${lon}`
+    );
+    this.current = { ...weatherData.current };
+    this.daily = weatherData.daily;
+  }
 };
 </script>
-<style lang="scss">
+<style>
 body {
   background-color: #100e1c;
 }
