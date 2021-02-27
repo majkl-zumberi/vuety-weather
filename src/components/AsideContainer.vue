@@ -4,7 +4,7 @@
       <v-btn depressed small class="font-weight-regular" @click.stop="drawer = !drawer">
         Cerca località</v-btn
       >
-      <v-btn depressed fab small>
+      <v-btn depressed fab small @click.stop="getCurrentLocation()">
         <v-icon>gps_fixed</v-icon>
       </v-btn>
     </v-row>
@@ -44,15 +44,19 @@
         </div>
       </div>
     </div>
+    <Drawer :drawer="drawer" @close="drawer = false" />
   </div>
 </template>
 
 <script>
 import moment from "moment";
+import Drawer from "@/components/Drawer.vue";
+import eventBus from "@/utils/eventBus";
 
 moment.locale("it");
 export default {
   name: "AsideContainer",
+  components: { Drawer },
   props: {
     current: {
       required: true,
@@ -90,14 +94,26 @@ export default {
       return this.current.temp;
     },
     fallbackIcon() {
+      /**
+       * verso sera ritorna un'altro tipo di icona (vers. scura) che finisce
+       * per 'n' invece che 'd' es 01n==>che non ho come assets(immagine)
+       * quindi rimuovo l'ultima lettera per assicurarmi che ritorni l'icona vers. chiara
+       */
+      const icon = this.current.weather[0].icon.substring(
+        0,
+        this.current.weather[0].icon.length - 1
+      );
       return this.failed_image
         ? `${process.env.VUE_APP_WEATHERICON}${this.current.weather[0].icon}${process.env.VUE_APP_SIZEICON}`
-        : `/img/${this.current.weather[0].icon}.png`;
+        : `/img/${icon}d.png`;
     }
   },
   methods: {
     onImgError() {
       this.failed_image = true;
+    },
+    getCurrentLocation() {
+      eventBus.$emit("current-location");
     }
   }
 };
